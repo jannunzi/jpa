@@ -12,14 +12,32 @@ public class MovieDao {
 	private static EntityManagerFactory factory =
 			Persistence.createEntityManagerFactory(UNIT);
 
-	public void createMovie(Movie movie) {
+	public void addActorToMovie(int aId, int mId) {
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+		
+		Actor actor = em.find(Actor.class, aId);
+		Movie movie = em.find(Movie.class, mId);
+		movie.getActors().add(actor);
+		actor.getMoviesActed().add(movie);
+		em.persist(movie);
+		em.persist(actor);
+		
+		em.getTransaction().commit();
+		em.close();
+	}
+	
+	public int createMovie(Movie movie) {
 		EntityManager em = factory.createEntityManager();
 		em.getTransaction().begin();
 		
 		em.persist(movie);
+		em.flush();
 		
 		em.getTransaction().commit();
 		em.close();
+		
+		return movie.getId();
 	}
 	
 	public Movie findMovieById(int id) {

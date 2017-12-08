@@ -12,14 +12,17 @@ public class ActorDao {
 	private static EntityManagerFactory factory =
 			Persistence.createEntityManagerFactory(UNIT);
 
-	public void createActor(Actor actor) {
+	public int createActor(Actor actor) {
 		EntityManager em = factory.createEntityManager();
 		em.getTransaction().begin();
 		
 		em.persist(actor);
-		
+		em.flush();
 		em.getTransaction().commit();
+		
 		em.close();
+		
+		return actor.getId();
 	}
 	
 	public static void main(String[] args) {
